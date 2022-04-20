@@ -1,4 +1,7 @@
-import matplotlib.pyplot as plt
+#
+#
+#
+
 import csv
 
 
@@ -45,7 +48,7 @@ def decode_raw24(raw_str, stereo=True, shift=False):
 
 
 def decode_BUFFER_HEX_data(bits, TAG="rbuf", shift=False):
-    with open('data/rbuf_data.txt', 'r') as file:
+    with open('../data/rbuf_data.txt', 'r') as file:
         lines = file.readlines()
     split_by = TAG+":"
     # Remove text before 'rbuf:', strip whitespace at start and end and remove spaces between bytes
@@ -62,7 +65,7 @@ def decode_BUFFER_HEX_data(bits, TAG="rbuf", shift=False):
 
 
 def decode_LOGIC_2_dump(bits, shift_right=False):
-    with open('data/data.csv') as csv_file:
+    with open('../data/data.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         next(csv_reader)  # skip first line
         samples = []
@@ -79,7 +82,7 @@ def decode_LOGIC_2_dump(bits, shift_right=False):
 
 
 def decode_wireshark_dump(bits, stereo=False, shift=False):
-    with open('data/wireshark.txt', 'r') as file:
+    with open('../data/wireshark.txt', 'r') as file:
         lines = file.readlines()
     data_str = lines[0]
     if bits == 16:
@@ -91,7 +94,7 @@ def decode_wireshark_dump(bits, stereo=False, shift=False):
 
 
 def decode_GSTREAMER_dump(bits, stereo=True):
-    with open('data/gstreamer.txt', 'r') as file:
+    with open('../data/gstreamer.txt', 'r') as file:
         lines = file.readlines()
     split_by = ":"
 
@@ -105,19 +108,3 @@ def decode_GSTREAMER_dump(bits, stereo=True):
         samples = decode_raw24(data_joined, shift=False)
     print("Gstreamer dump decoded.", "Number of samples:", len(samples[0] + samples[1]))
     return samples
-
-
-def plot_samples(samples, bits_per_sample):
-    max = pow(2, bits_per_sample) / 2
-    fig, axs = plt.subplots(2, sharex=True)
-    fig.suptitle('')
-    axs[0].stem(samples[0])
-    axs[1].stem(samples[1])
-    axs[0].set_ylim((max, -max))
-    axs[1].set_ylim((max, -max))
-    plt.show()
-
-
-if __name__ == '__main__':
-    samples = decode_GSTREAMER_dump(16)
-    plot_samples(samples,16)
