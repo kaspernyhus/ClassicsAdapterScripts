@@ -1,25 +1,26 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.fftpack
-from plot_rbuf import decode_BUFFER_HEX_data, plot_samples
+from plot_rbuf import decode_BUFFER_HEX_data, plot_samples, decode_LOGIC_2_dump, decode_wireshark_dump, decode_GSTREAMER_dump
 
 
-bits_pr_sample = 24
-samples = decode_BUFFER_HEX_data(bits_pr_sample, TAG="log_buffer")
+bits_pr_sample = 16
+#samples = decode_BUFFER_HEX_data(bits_pr_sample, TAG="log_buffer", shift=True)
+#samples = decode_LOGIC_2_dump(bits_pr_sample, shift_right=True)
+samples = decode_wireshark_dump(bits_pr_sample, stereo=True)
+#samples = decode_GSTREAMER_dump(bits_pr_sample, stereo=True)
+
+plot_samples(samples, bits_pr_sample)
 
 
-plot_samples(samples)
-
-
+# FFT
 left_ch = samples[0]
 right_ch = samples[1]
 
-
-# Number of samplepoints
+# Number of sample points
 N = len(left_ch)
 Fs = 48000
 T = 1.0 / Fs
-
 
 yf_L = scipy.fftpack.fft(left_ch)
 yf_R = scipy.fftpack.fft(right_ch)
