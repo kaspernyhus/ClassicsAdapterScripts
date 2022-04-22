@@ -48,7 +48,7 @@ def decode_raw24(raw_str, stereo=True, shift=False):
 
 
 def decode_BUFFER_HEX_data(bits, TAG="rbuf", shift=False):
-    with open('../data/rbuf_data.txt', 'r') as file:
+    with open('../data/logbuffer_data.txt', 'r') as file:
         lines = file.readlines()
     split_by = TAG+":"
     # Remove text before 'rbuf:', strip whitespace at start and end and remove spaces between bytes
@@ -84,17 +84,18 @@ def decode_LOGIC_2_dump(bits, shift_right=False):
 def decode_wireshark_dump(bits, stereo=False, shift=False):
     with open('../data/wireshark.txt', 'r') as file:
         lines = file.readlines()
-    data_str = lines[0]
+    data_str = [line.strip() for line in lines]
+    data_joined = ''.join(data_str)
     if bits == 16:
-        samples = decode_raw16(data_str, stereo=stereo)
+        samples = decode_raw16(data_joined, stereo=stereo)
     else:
-        samples = decode_raw24(data_str, shift)
+        samples = decode_raw24(data_joined, shift)
     print("Wireshark dump decoded.", "Number of samples:", len(samples[0]+samples[1]))
     return samples
 
 
 def decode_GSTREAMER_dump(bits, stereo=True):
-    with open('../data/gstreamer.txt', 'r') as file:
+    with open('../data/gstreamer_dump.txt', 'r') as file:
         lines = file.readlines()
     split_by = ":"
 
