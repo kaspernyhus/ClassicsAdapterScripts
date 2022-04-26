@@ -6,10 +6,10 @@ from fft_plot import plot_fft
 bits_pr_sample = 16
 sample_rate = 48000
 
-#samples = decode_BUFFER_HEX_data(bits_pr_sample, TAG="log_buffer", shift=True)
-#samples = decode_LOGIC_2_dump(bits_pr_sample, shift_right=True)
+samples = decode_BUFFER_HEX_data(bits_pr_sample, TAG="log_buffer", shift=True, endianess='BE')
+#samples = decode_LOGIC_2_dump(bits_pr_sample, shift_right=False)
 #samples = decode_wireshark_dump(bits_pr_sample, stereo=True)
-samples = decode_GSTREAMER_dump(bits_pr_sample, stereo=True)
+#samples = decode_GSTREAMER_dump(bits_pr_sample, stereo=True, endianess='BE')
 
 plot_samples(samples, bits_pr_sample)
 plot_fft(samples, sample_rate)
