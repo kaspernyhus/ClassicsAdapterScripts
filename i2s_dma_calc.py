@@ -4,8 +4,8 @@
 from math import floor, ceil
 
 
-sample_rate = 144000  # Hz
-bit_width = 32        # bit
+sample_rate = 48000  # Hz
+bit_width = 16        # bit
 channels = 2
 polling_cycle = 10    # ms  //  max time of i2s_read polling cycle
 
@@ -27,7 +27,20 @@ print("-------------------------------------")
 print("dma_desc_num (dma_buf_count):", dma_desc_num)
 print("dma_frame_num (dma_buf_len):", dma_frame_num)
 print("-----------------")
+print("dma_buffer_size:", dma_buffer_size)
 print("interrupt interval:", round(interrupt_interval, 3), "ms")
 print("user buffer must be at least", int(user_buffer), "bytes")
-
 print("-------------------------------------")
+
+
+# ---------------------------------- #
+
+dma_desc_num = 8
+dma_frame_num = 480
+
+
+dma_buffer_size = dma_frame_num * channels * (bit_width / 8)
+interrupt_interval = (dma_frame_num / sample_rate) * 1000
+
+print("dma_buffer_size", dma_buffer_size)
+print("interrupt_interval:", interrupt_interval)
