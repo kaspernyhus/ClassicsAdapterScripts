@@ -7,7 +7,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 # Set the client socket's TCP "well-known port" number
-well_known_port = 8100
+well_known_port = 3333
 sock.bind(('', well_known_port))
 
 # Set the number of clients waiting for connection that can be queued
@@ -22,9 +22,11 @@ try:
         while 1:
             receivedData = newSocket.recv(1024)
             if not receivedData: break
-            # Echo back the same data you just received
-            newSocket.send(receivedData)
+            # Echo back the same PCM_data you just received
+            print(receivedData)
         newSocket.close(  )
         print("Disconnected from", address)
 finally:
     sock.close(  )
+
+
