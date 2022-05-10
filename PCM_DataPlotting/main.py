@@ -2,12 +2,12 @@ from decode import decode_BUFFER_HEX_data, decode_LOGIC_2_dump, decode_wireshark
 from plotting import plot_samples, plot_fft, show_plots
 
 
-bits_pr_sample = 16
+bits_pr_sample = 24
 sample_rate = 48000
 
-samples = decode_BUFFER_HEX_data(bits_pr_sample, TAG="log_buffer", shift=True, endianess='BE')
-#samples = decode_LOGIC_2_dump(bits_pr_sample, shift_right=False)
-#samples = decode_wireshark_dump(bits_pr_sample, stereo=True)
+#samples = decode_BUFFER_HEX_data(bits_pr_sample, TAG="log_buffer", shift=True, endianess='BE')
+#samples = decode_LOGIC_2_dump(bits_pr_sample, shift_right=True)
+samples = decode_wireshark_dump(bits_pr_sample, stereo=True, shift=False)
 #samples = decode_GSTREAMER_dump(bits_pr_sample, stereo=True, endianess='BE')
 
 plot_samples(samples, bits_pr_sample)

@@ -44,7 +44,22 @@ def decode_raw24(raw_str, stereo=True, shift=False):
     if shift:
         #hex_samples = [raw_str[i+2:i + 8] for i in range(0, len(raw_str), 8)]  # split string into chunks of 8 = 32bit
         hex_samples = [raw_str[i+6:i+8]+raw_str[i+4:i+6]+raw_str[i+2:i+4] for i in range(0, len(raw_str), 8)]  # split string into chunks of 8 = 32bit
-        print(hex_samples)
+    else:
+        hex_samples = [raw_str[i:i+6] for i in range(0, len(raw_str), 6)]  # split string into chunks of 6 = 24bit
+
+    samples = [twos_complement(hex_samples[i], 24) for i in range(0, len(hex_samples))]
+    if stereo:
+        left = samples[::2]
+        right = samples[1::2]
+        return [left, right]
+    else:
+        return [samples, [0]]
+
+
+def decode_raw24BE(raw_str, stereo=True, shift=False):
+    if shift:
+        hex_samples = [raw_str[i+2:i + 8] for i in range(0, len(raw_str), 8)]  # split string into chunks of 8 = 32bit
+        # hex_samples = [raw_str[i+6:i+8]+raw_str[i+4:i+6]+raw_str[i+2:i+4] for i in range(0, len(raw_str), 8)]  # split string into chunks of 8 = 32bit
     else:
         hex_samples = [raw_str[i:i+6] for i in range(0, len(raw_str), 6)]  # split string into chunks of 6 = 24bit
 
@@ -86,7 +101,7 @@ def decode_LOGIC_2_dump(bits, shift_right=False):
             if shift_right:
                 samples.append(twos_complement(row[4][8:-2], bits))  # Row4 == PCM_data, 0x0000000011223300[8:-2] = 00112233
             else:
-                samples.append(twos_complement(row[4][10:], bits))  # Row4 == PCM_data, 0x0000000011223344[10:] = 11223344
+                samples.append(twos_complement(row[4][10:], bits))   # Row4 == PCM_data, 0x0000000011223344[10:]  = 11223344
     left = samples[::2]
     right = samples[1::2]
     print("LOGIC_2 dump decoded.", "Number of samples:", len(samples))
@@ -101,7 +116,7 @@ def decode_wireshark_dump(bits, stereo=False, shift=False):
     if bits == 16:
         samples = decode_raw16(data_joined, stereo=stereo)
     else:
-        samples = decode_raw24(data_joined, shift)
+        samples = decode_raw24BE(data_joined, stereo=stereo, shift=shift)
     print("Wireshark dump decoded.", "Number of samples:", len(samples[0]+samples[1]))
     return samples
 
