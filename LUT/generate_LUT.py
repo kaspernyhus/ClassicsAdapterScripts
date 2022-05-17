@@ -13,6 +13,10 @@ def int2hex(number, bits):
         return '0x'+hex(number)[2:].zfill(8)
 
 
+def BEtoLE_24(hex_str):
+    return hex_str[0:2] + hex_str[8:10] + hex_str[6:8] + hex_str[4:6] + hex_str[2:4]
+
+
 def twos_complement(hexstr, bits):
     value = int(hexstr, 16)
     if value & (1 << (bits-1)):
@@ -22,7 +26,7 @@ def twos_complement(hexstr, bits):
 
 bits = 24
 fs = 48000
-fw = 10000.  # wanted freq
+fw = 440.  # wanted freq
 N = round(fs/fw)
 T = 1/fs
 f = fs/N    # real freq
@@ -33,7 +37,6 @@ x = np.arange(N)
 A = floor((pow(2, bits)-1)/2)
 samples = A*np.sin(2.0*np.pi*f*x*T)
 samples = [round(sample) for sample in samples]
-print(samples)
 
 print("bits:", bits, "fs:", fs, "f:", fw, "f_real:", f, "N:", N, "T:", T, "A:", A)
 
@@ -42,7 +45,7 @@ print("LUT length:", len(hex_samples))
 
 p_str = ""
 line = 0
-print("-------------------------------------------------------")
+print("------------------------ Big Endian -------------------------------")
 for hex_sample in hex_samples:
     p_str += hex_sample + ","
     line += 1
@@ -53,9 +56,22 @@ for hex_sample in hex_samples:
 print(p_str)
 print("-------------------------------------------------------")
 
+p_str = ""
+line = 0
+print("------------------------ Little Endian -------------------------------")
+for hex_sample in hex_samples:
+    p_str += BEtoLE_24(hex_sample) + ","
+    line += 1
+    if line == 8:
+        print(p_str)
+        line = 0
+        p_str = ""
+print(p_str)
+print("-------------------------------------------------------")
+
 samples = [twos_complement(h, bits) for h in hex_samples]
 
-periods = 1
+periods = 100
 x_plt = np.arange(0, periods*N)
 samples_plt = np.tile(samples, periods)
 

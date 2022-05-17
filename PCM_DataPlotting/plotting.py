@@ -7,10 +7,14 @@ def plot_samples(samples, bits_per_sample):
     max = pow(2, bits_per_sample) / 2
     fig, axs = plt.subplots(2, sharex=True)
     fig.suptitle('')
+    axs[0].set_title(str(bits_per_sample) + " bits per sample")
+    axs[0].set_ylabel('L')
+    axs[1].set_ylabel('R')
     axs[0].stem(samples[0])
     axs[1].stem(samples[1])
     axs[0].set_ylim((max, -max))
     axs[1].set_ylim((max, -max))
+
 
 
 def plot_fft(samples, fs=48000):
@@ -34,7 +38,12 @@ def plot_fft(samples, fs=48000):
     ax[0].set_xscale('log')
     ax[1].set_xscale('log')
 
+    ax[0].set_title("Sample rate: " + str(fs) + "Hz")
+    ax[0].set_ylabel('L')
+    ax[1].set_ylabel('R')
+
 
 def show_plots():
+    plt.tight_layout()
     plt.show()
 
