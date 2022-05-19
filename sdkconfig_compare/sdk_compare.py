@@ -1,6 +1,3 @@
-
-
-
 def reformat_not_set(entry):
     entry_lst = list(entry[2:])
     entry_lst[-11] = '='
