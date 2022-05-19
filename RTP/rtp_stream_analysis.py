@@ -2,6 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
+#
+# Wireshark -> Telephony -> RTP -> RTP Streams -> Analyse -> Save -> Forward Stream CSV
+#
+
 def get_quantile(lower, upper):
     if lower == 0:
         return df[(df['Delta'] < upper)]['Delta'].sum() / df['Delta'].sum() * 100
@@ -11,7 +15,7 @@ def get_quantile(lower, upper):
         return df[(df['Delta'] > lower) & (df['Delta'] < upper)]['Delta'].sum() / df['Delta'].sum() * 100
 
 
-filename = 'RTP_data/RTP_Packet_Data_office1.csv'
+filename = 'RTP_data/RTP_Packet_Data_office_static32.csv'
 
 # Import CSV PCM_data, skip first row, include columns 0125
 df = pd.read_csv(filename, skiprows=1, header=None, usecols=[0, 1, 2, 5])

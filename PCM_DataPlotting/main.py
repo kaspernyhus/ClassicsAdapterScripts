@@ -2,7 +2,7 @@ from decode import decode_BUFFER_HEX_data, decode_LOGIC_2_dump, decode_wireshark
 from plotting import plot_samples, plot_fft, show_plots
 
 
-bits_pr_sample = 24
+bits_pr_sample = 16
 sample_rate = 48000
 
 samples = decode_BUFFER_HEX_data(bits_pr_sample, TAG="buffer", shift=False, endianess='LE')
