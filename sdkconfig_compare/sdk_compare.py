@@ -18,8 +18,8 @@ with open('sdk2.txt') as f:
     sdk2_lines = [line.strip() for line in sdk2_lines]
     sdk2_lines = [line for line in sdk2_lines if line]  # remove empty strings
 
-diff1 = list(set(sdk2_lines) - set(sdk1_lines))
-diff2 = list(set(sdk1_lines) - set(sdk2_lines))
+diff1 = list(set(sdk1_lines) - set(sdk2_lines))
+diff2 = list(set(sdk2_lines) - set(sdk1_lines))
 
 diff1_cleaned = []
 diff2_cleaned = []
