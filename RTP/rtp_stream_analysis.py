@@ -52,6 +52,7 @@ def rtp_analyse(filename, bandwidth=False):
     # ax.set_ylim([0, ax.axes.get_ylim()[1]])
     plt.ylabel("Packets delta delay [ms]")
     plt.title("RTP packet delay. File: "+filename)
+    plt.ylim(0, 600)
 
     if(bandwidth):
         df.plot(y='Bandwidth')
@@ -64,12 +65,13 @@ def rtp_analyse(filename, bandwidth=False):
     plt.xticks(rotation=45)
     plt.ylabel("%")
     plt.title("RTP packet delay distribution. File: "+filename)
+    plt.ylim(0, 100)
     plt.tight_layout()
     # plt.show()
 
 
-filename1 = 'RTP_data/RTP_Packet_Data_office_static32_2.csv'
-filename2 = 'RTP_data/RTP_Packet_Data_office_dyn128_2.csv'
+filename1 = 'RTP_data/RTP Packet Data test4.csv'
+filename2 = 'RTP_data/RTP_Packet_Data_home_static32.csv'
 rtp_analyse(filename1)
 rtp_analyse(filename2)
 plt.show()
