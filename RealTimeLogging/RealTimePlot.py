@@ -58,7 +58,6 @@ class SerialPlotter:
             self.max_y_recorded = latest_y
         ax.set_title("Log ID:" + str(self.plot_log_id) + " " + self.plot_title)
 
-
     def background_thread(self):
         # time.sleep(0.1)
         self.serialConnection.reset_input_buffer()
@@ -80,7 +79,6 @@ class SerialPlotter:
                 self.plot_title = self.parsed_data['data']
 
                 # print(self.timestamps, self.data)
-
 
     def get_max_plot_length(self):
         return self.plotMaxLength
