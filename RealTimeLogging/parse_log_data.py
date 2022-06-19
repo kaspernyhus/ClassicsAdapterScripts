@@ -16,7 +16,16 @@ def parse_log_data(data_raw):
         index = 2
 
         log_type_raw = data_raw[index]
-        log_type = "ID" if log_type_raw == 0 else "Data"
+        if log_type_raw == 0:
+            log_type = "ID"
+        elif log_type_raw == 1:
+            log_type = "Data"
+        elif log_type_raw == 2:
+            log_type = "Event"
+        else:
+            print("ERROR: invalid log type:", log_type_raw)
+            return 0
+
         index += 1
         # print("log_type:", log_type)
 
@@ -37,11 +46,14 @@ def parse_log_data(data_raw):
         # for byte in data:
         #     print(hex(byte))
 
-        if log_type == 'Data':
+        if log_type == 'ID':
+            data = data.decode()[:-1].strip()
+            # print("data:", data)
+        elif log_type == 'Data':
             data = int.from_bytes(data, "little")
             # print("data:", data)
-        elif log_type == 'ID':
-            data = data.decode()[:-1]
+        elif log_type == 'Event':
+            data = data.decode()[:-1].strip()
             # print("data:", data)
         else:
             data = "Log type error"
