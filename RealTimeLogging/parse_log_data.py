@@ -47,13 +47,13 @@ def parse_log_data(data_raw):
         #     print(hex(byte))
 
         if log_type == 'ID':
-            data = data.decode()[:-1].strip()
+            data = data.decode().rstrip('\x00')
             # print("data:", data)
         elif log_type == 'Data':
             data = int.from_bytes(data, "little")
             # print("data:", data)
         elif log_type == 'Event':
-            data = data.decode()[:-1].strip()
+            data = data.decode().rstrip('\x00')
             # print("data:", data)
         else:
             data = "Log type error"
