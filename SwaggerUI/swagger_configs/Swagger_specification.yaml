@@ -1,35 +1,40 @@
 swagger: "2.0"
 info:
-  description: "This is a sample server Petstore server."
+  title: "Classics Adapter API"
+  description: "API for interacting with the Bang & Olufsen Classics Adapter"
   version: "1.0.0"
-  title: "IoT application"
 
-host: "192.168.1.84"
+host: "192.168.1.45"
 
 tags:
-- name: "Temperature"
-  description: "Getting temperature measurements"
+- name: "System"
+
 
 paths:
-  /temperature:
+  /api/system/info:
     get:
       tags:
-      - "Temperature"
-      summary: "Endpoint for getting temperature measurements"
-      description: ""
-      operationId: "getTemperature"
+      - "System"
+      description: "Returns system info"
+      operationId: "getSystemInfo"
 
       responses:
         200:
-          description: "A list of temperature measurements"
+          description: "String with system info"
           schema:
-            $ref: '#/definitions/temperatureMeasurement'
+            $ref: '#/definitions/systemInfo'
 
 definitions:
-  temperatureMeasurement:
+  systemInfo:
     type: object
     properties:
-      value:
+      Chip:
         type: string
-      timestamp:
+      Silicon revision:
+        type: integer
+      Number of cores:
+        type: integer
+      Flash size:
+        type: string
+      Features:
         type: string
