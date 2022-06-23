@@ -4,7 +4,7 @@ import minify_html
 # Opens SwaggerUI.html and minifies it, escapes all "-characters and outputs it to SwaggerUI_minified.txt ready to use
 ######################################################################################################################
 
-with open('SwaggerUI.html', 'r') as f:
+with open('swagger_configs/SwaggerUI.html', 'r') as f:
     html_str = f.read()
 
 minified = minify_html.minify(html_str,
