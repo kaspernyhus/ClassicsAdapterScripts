@@ -26,7 +26,9 @@ class SerialPlotter:
         self.plot_length = plot_length
         self.raw_log_data = bytearray()
         self.log_data = []
+        self.log_events = [[] for i in range(number_of_plots)]
         self.plot_titles = ['Remote logging' for i in range(number_of_plots)]
+        self.event_tags = ['Event' for i in range(number_of_plots)]
         self.plot_log_ids = set()
         self.plot_intervals = [0.0 for i in range(number_of_plots)]
         self.previous_timers = [0.0 for i in range(number_of_plots)]
@@ -56,7 +58,8 @@ class SerialPlotter:
                 time.sleep(0.1)
 
     def get_serial_data(self, frame, lines, current_value_text, line_label, time_text, ax, plot_number):
-        # print(self.log_data)
+        # print("log data:", self.log_data)
+        # print("events:", self.log_events)
         current_time = time.perf_counter()
         self.plot_intervals[plot_number] = int((current_time - self.previous_timers[plot_number]) * 1000)
         self.previous_timers[plot_number] = current_time
@@ -64,6 +67,9 @@ class SerialPlotter:
         current_value_text.set_text(line_label + ' = ' + str(self.log_data[plot_number]['data'][-1]))
         lines.set_data(self.log_data[plot_number]['timestamps'], self.log_data[plot_number]['data'])
         ax.set_xlim(self.log_data[plot_number]['timestamps'][0], self.log_data[plot_number]['timestamps'][-1])
+        for event in self.log_events[plot_number]:
+            print("Recorded events:", event)
+
         # rescale y axis if needed
         latest_y = self.log_data[plot_number]['data'][-1]
         if latest_y > self.max_y_recorded[plot_number]:
@@ -104,8 +110,13 @@ class SerialPlotter:
                     self.log_data[log_id]['timestamps'] = self.log_data[log_id]['timestamps'][-self.plot_length:]
                     self.log_data[log_id]['data'] = self.log_data[log_id]['data'][-self.plot_length:]
                 if parsed_data['type'] == 'Event':
-                    self.plot_log_ids.add(parsed_data['id'])
-                    self.plot_titles[parsed_data['id']-1] = parsed_data['data']
+                    event_id = parsed_data['id']-1
+                    event_tag = parsed_data['data']
+
+                    self.event_tags[event_id] = event_tag
+                    self.log_events[event_id].append(parsed_data['timestamp'])
+
+                    print(self.log_events)
 
                 if self.log_to_csv:
                     # Save data to CSV file
@@ -141,7 +152,7 @@ def make_figure(x_limit, y_limit):
 
 def main():
     number_of_plots = 2
-    s = SerialPlotter('/dev/ttyUSB1', 9600, number_of_plots=number_of_plots)
+    s = SerialPlotter('/dev/ttyUSB0', 9600, number_of_plots=number_of_plots)
     s.start()
 
     # plotting starts below

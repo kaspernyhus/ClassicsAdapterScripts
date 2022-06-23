@@ -54,7 +54,8 @@ def parse_log_data(data_raw):
             # print("data:", data)
         elif log_type == 'Event':
             data = data.decode().rstrip('\x00')
-            # print("data:", data)
+            # print(data_raw)
+            # print("type:", log_type, "ID", log_id, "data:", data)
         else:
             data = "Log type error"
 
