@@ -3,26 +3,96 @@ info:
   title: "Classics Adapter API"
   description: "API for interacting with the Bang & Olufsen Classics Adapter"
   version: "1.0.0"
-
 host: "192.168.1.45"
-
+basePath: "/api/v1"
 tags:
-- name: "System"
-
+  - name: "System"
+    description: ""
+  - name: "Streaming"
+    description: ""
+  - name: "Masterlink"
+    description: ""
 
 paths:
-  /api/system/info:
+  /system/info:
     get:
       tags:
-      - "System"
+        - "System"
       description: "Returns system info"
       operationId: "getSystemInfo"
-
       responses:
-        200:
+        "200":
           description: "String with system info"
           schema:
             $ref: '#/definitions/systemInfo'
+
+  /streaming/ip:
+    get:
+      tags:
+        - "Streaming"
+      description: "Get current host ip"
+      operationId: "getHostIP"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: string
+    post:
+      tags:
+        - "Streaming"
+      description: "Set IP of streaming endpoint"
+      operationId: "setHostIP"
+      parameters:
+        - name: "hostIP"
+          in: "body"
+          description: "IP address of host the Classics Adapter is streaming audio to"
+          required: true
+          schema:
+            $ref: '#/definitions/setHostIP'
+      responses:
+        "200":
+          description: "Success"
+        "405":
+          description: "Invalid input"
+
+  /masterlink/model:
+    get:
+      tags:
+        - "Masterlink"
+      description: "Get selected model"
+      operationId: "getModel"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: '#/definitions/selectModel'
+    post:
+      tags:
+        - "Masterlink"
+      description: "Select B&O Classics Model"
+      operationId: "selectModel"
+      parameters:
+        - name: "model"
+          in: "body"
+          description: "B&O product model type"
+          schema:
+            $ref: '#/definitions/selectModel'
+      responses:
+        "200":
+          description: "Success"
+        "405":
+          description: "Invalid input"
+  /masterlink/control:
+    post:
+      tags:
+        - "Masterlink"
+      description: "Controls for masterlink products"
+      operationId: "select"
+      responses:
+        "200":
+          description: "Success"
+        "405":
+          description: "Invalid input"
 
 definitions:
   systemInfo:
@@ -38,3 +108,15 @@ definitions:
         type: string
       Features:
         type: string
+  setHostIP:
+    type: object
+    properties:
+      IP:
+        type: string
+        example: "192.168.1.132"
+  selectModel:
+    type: object
+    properties:
+      model:
+        type: string
+        example: "BeoSound 9000 mk3"
