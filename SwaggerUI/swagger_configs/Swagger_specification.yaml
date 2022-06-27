@@ -3,7 +3,7 @@ info:
   title: "Classics Adapter API"
   description: "API for interacting with the Bang & Olufsen Classics Adapter"
   version: "1.0.0"
-host: "192.168.1.45"
+host: "***.***.***.***"
 basePath: "/api/v1"
 tags:
   - name: "System"
@@ -26,12 +26,12 @@ paths:
           schema:
             $ref: '#/definitions/systemInfo'
 
-  /streaming/ip:
+  /streaming/dest_ip:
     get:
       tags:
         - "Streaming"
-      description: "Get current host ip"
-      operationId: "getHostIP"
+      description: "Get current destination ip"
+      operationId: "getDestIP"
       responses:
         "200":
           description: "OK"
@@ -40,20 +40,20 @@ paths:
     post:
       tags:
         - "Streaming"
-      description: "Set IP of streaming endpoint"
-      operationId: "setHostIP"
+      description: "Set destination IP of udp stream"
+      operationId: "setDestIP"
       parameters:
-        - name: "hostIP"
+        - name: "destIP"
           in: "body"
           description: "IP address of host the Classics Adapter is streaming audio to"
           required: true
           schema:
-            $ref: '#/definitions/setHostIP'
+            type: string
       responses:
         "200":
           description: "Success"
         "405":
-          description: "Invalid input"
+          description: "Invalid IP address"
 
   /masterlink/model:
     get:
@@ -82,12 +82,18 @@ paths:
           description: "Success"
         "405":
           description: "Invalid input"
-  /masterlink/control:
+  /masterlink/control/{command}:
     post:
       tags:
         - "Masterlink"
       description: "Controls for masterlink products"
       operationId: "select"
+      parameters:
+      - name: "command"
+        in: "path"
+        description: "Available values : play, pause, stop, next, prev, nextCD, prevCD"
+        required: true
+        type: "string"
       responses:
         "200":
           description: "Success"
@@ -108,12 +114,6 @@ definitions:
         type: string
       Features:
         type: string
-  setHostIP:
-    type: object
-    properties:
-      IP:
-        type: string
-        example: "192.168.1.132"
   selectModel:
     type: object
     properties:
