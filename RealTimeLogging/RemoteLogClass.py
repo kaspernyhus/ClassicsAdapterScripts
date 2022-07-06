@@ -3,11 +3,9 @@ import os
 import serial
 import time
 import collections
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 import csv
 from datetime import datetime
-
+import matplotlib.pyplot as plt
 from parse_log_data import parse_log_data, get_data
 
 
@@ -57,24 +55,36 @@ class SerialPlotter:
             while not self.is_receiving:
                 time.sleep(0.1)
 
-    def get_serial_data(self, frame, lines, current_value_text, line_label, time_text, ax, plot_number):
+    def get_serial_data(self, frame, lines, current_value_text, time_text, ax, plot_number):
         # print("log data:", self.log_data)
         # print("events:", self.log_events)
+
+        # Calculate update interval
         current_time = time.perf_counter()
         self.plot_intervals[plot_number] = int((current_time - self.previous_timers[plot_number]) * 1000)
         self.previous_timers[plot_number] = current_time
         time_text.set_text('update interval = ' + str(self.plot_intervals[plot_number]) + 'ms')
-        current_value_text.set_text(line_label + ' = ' + str(self.log_data[plot_number]['data'][-1]))
+
+        # Set text
+        current_value_text.set_text("current value = " + str(self.log_data[plot_number]['data'][-1]))
         lines.set_data(self.log_data[plot_number]['timestamps'], self.log_data[plot_number]['data'])
+        lines.set_label(('label1', 'label2'))
         ax.set_xlim(self.log_data[plot_number]['timestamps'][0], self.log_data[plot_number]['timestamps'][-1])
-        for event in self.log_events[plot_number]:
-            print("Recorded events:", event)
 
         # rescale y axis if needed
         latest_y = self.log_data[plot_number]['data'][-1]
         if latest_y > self.max_y_recorded[plot_number]:
             ax.set_ylim(0, latest_y+latest_y*0.1)
             self.max_y_recorded[plot_number] = latest_y
+
+        # plot events lines
+        if self.log_events[plot_number]:
+            event = self.log_events[plot_number][-1]
+            ax.vlines(x=event, ymin=0, ymax=self.max_y_recorded[plot_number]+self.max_y_recorded[plot_number]*0.11, colors='k', ls='--')
+            ax.text(event, self.max_y_recorded[plot_number] / 2, self.event_tags[plot_number], rotation=90,
+                    verticalalignment='center')
+            self.log_events[plot_number].remove(event)  # remove from event list to only draw once
+
         ax.set_title("Log ID:" + str(plot_number+1) + " " + self.plot_titles[plot_number])
 
     def background_thread(self):
@@ -82,7 +92,7 @@ class SerialPlotter:
         self.serialConnection.reset_input_buffer()
 
         if self.log_to_csv:
-            date = datetime.now().strftime("%d%m%y_%H%M")
+            date = datetime.now().strftime("%y%m%d_%H%M")
             script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
             rel_path = 'LoggingData/LoggingData_' + str(date) + '.csv'
             abs_file_path = os.path.join(script_dir, rel_path)
@@ -112,11 +122,8 @@ class SerialPlotter:
                 if parsed_data['type'] == 'Event':
                     event_id = parsed_data['id']-1
                     event_tag = parsed_data['data']
-
                     self.event_tags[event_id] = event_tag
                     self.log_events[event_id].append(parsed_data['timestamp'])
-
-                    print(self.log_events)
 
                 if self.log_to_csv:
                     # Save data to CSV file
@@ -148,36 +155,4 @@ def make_figure(x_limit, y_limit):
     ax.set_xlabel("Timestamps")
     ax.set_ylabel("kBytes")
     return fig, ax
-
-
-def main():
-    number_of_plots = 2
-    s = SerialPlotter('/dev/ttyUSB0', 9600, number_of_plots=number_of_plots)
-    s.start()
-
-    # plotting starts below
-    update_interval_ms = 100
-    x_limit = (0, 1000000)
-    y_limit = (0, 1000000)
-    x_limits = [x_limit for i in range(number_of_plots)]
-    y_limits = [y_limit for i in range(number_of_plots)]
-    line_label = 'Free heap'
-    anim = []
-    for i in range(number_of_plots):
-        fig, ax = make_figure(x_limits[i], y_limits[i])
-        lines = ax.plot([], [])[0]
-        update_rate_text = ax.text(0.50, 0.95, '', transform=ax.transAxes)
-        current_value_text = ax.text(0.50, 0.90, '', transform=ax.transAxes)
-        anim.append(animation.FuncAnimation(fig, s.get_serial_data, fargs=(lines, current_value_text, line_label,
-                                                                           update_rate_text, ax, i),
-                                            interval=update_interval_ms))
-        plt.legend(loc="upper left")
-
-    plt.show()
-
-    s.close()
-
-
-if __name__ == '__main__':
-    main()
 

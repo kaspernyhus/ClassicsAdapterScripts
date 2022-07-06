@@ -3,7 +3,7 @@ info:
   title: "Classics Adapter API"
   description: "API for interacting with the Bang & Olufsen Classics Adapter"
   version: "1.0.0"
-host: "***.***.***.***"
+host: "classicsadapter.local"
 basePath: "/api/v1"
 tags:
   - name: "System"
@@ -14,6 +14,23 @@ tags:
     description: ""
 
 paths:
+  /system/name:
+    post:
+      tags:
+        - "System"
+      description: "Set name of Classics Adapter"
+      operationId: "setName"
+      parameters:
+        - name: "Name"
+          in: "body"
+          description: "Name of Classics Adapter on the network"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Name successfully set"
+
   /system/info:
     get:
       tags:
@@ -91,7 +108,7 @@ paths:
       parameters:
       - name: "command"
         in: "path"
-        description: "Available values : play, pause, stop, next, prev, nextCD, prevCD"
+        description: "Available commands : play, stop, cd, radio, tape, standby, next, prev, wind, rewind, volup, voldown, num1, num2, num3, num4, num5, num6, num7, num8, num9, num0, yellow, green, blue, red"
         required: true
         type: "string"
       responses:
