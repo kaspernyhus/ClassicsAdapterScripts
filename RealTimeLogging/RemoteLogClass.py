@@ -152,7 +152,7 @@ def make_figure(x_limit, y_limit):
     fig = plt.figure()
     ax = plt.axes(ylim=(float(ymin - (ymax - ymin) / 1000), float(ymax + (ymax - ymin) / 1000)))
     ax.set_title('Title')
-    ax.set_xlabel("Timestamps")
-    ax.set_ylabel("kBytes")
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Bytes")
     return fig, ax
 
