@@ -2,3 +2,5 @@ venv
 .idea
 /RTP/RTP_data/
 __pycache__
+/RealTimeLogging/LoggingData/
+.csv
